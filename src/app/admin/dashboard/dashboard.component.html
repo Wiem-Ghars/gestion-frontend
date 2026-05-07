@@ -1,0 +1,190 @@
+<div class="page">
+
+  <div class="page-header">
+    <h1>Tableau de bord</h1>
+    <p>Vue d'ensemble de la gestion des projets</p>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error && !loading">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <ng-container *ngIf="!loading && stats">
+
+    <!-- ── KPI cards ── -->
+    <div class="kpi-grid">
+
+      <!-- Event/Project Number card -->
+      <mat-card class="kpi-card" matTooltip="Total des projets/events">
+        <mat-card-content>
+          <div class="kpi-icon kpi-icon--projets">
+            <mat-icon>work</mat-icon>
+          </div>
+          <p class="kpi-value">{{ Nbevent }}</p>
+          <p class="kpi-label">Projets</p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Member/Employee Number card -->
+      <mat-card class="kpi-card" matTooltip="Total des employés">
+        <mat-card-content>
+          <div class="kpi-icon kpi-icon--employees">
+            <mat-icon>people</mat-icon>
+          </div>
+          <p class="kpi-value">{{ Nbmember }}</p>
+          <p class="kpi-label">Employés</p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Unassigned employees card -->
+      <mat-card class="kpi-card kpi-card--clickable" (click)="goToUnassigned()"
+                [class.kpi-card--amber]="unassignedCount > 0"
+                matTooltip="Voir les employés non assignés">
+        <mat-card-content>
+          <div class="kpi-icon" [ngClass]="unassignedCount > 0 ? 'kpi-icon--unassigned' : 'kpi-icon--unassigned-ok'">
+            <mat-icon>person_off</mat-icon>
+          </div>
+          <p class="kpi-value" [class.kpi-value--amber]="unassignedCount > 0">{{ unassignedCount }}</p>
+          <p class="kpi-label">Non assignés</p>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+        <!-- ── Ending Soon / Urgent Tracker Section ── -->
+    <div style="margin-top: 2rem;" *ngIf="projetsEndingSoon.length > 0">
+      <mat-card class="panel ending-soon-panel">
+        <mat-card-header style="border-bottom: 1px solid #eef2f1; padding-bottom: 15px; margin-bottom: 15px;">
+          <mat-card-title style="display: flex; align-items: center;">
+            <mat-icon class="ending-soon-icon" style="color: #ef4444; margin-right: 8px;">notification_important</mat-icon>
+            Projets à Livrer Prochainement
+            <span class="ending-soon-count" style="background:#fef2f2; color:#ef4444;">{{ projetsEndingSoon.length }}</span>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="padding-top: 10px;">
+          <div class="ending-soon-list">
+            <div class="ending-soon-item" *ngFor="let p of projetsEndingSoon" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.04); margin-bottom: 8px;">
+              <div class="ending-soon-left" style="display: flex; align-items: center; gap: 16px;">
+                <div class="ending-soon-proj-icon" style="background: #fef2f2; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <mat-icon style="color: #ef4444;">timer</mat-icon>
+                </div>
+                <div>
+                  <p class="ending-soon-name" style="margin: 0; font-weight: 600; font-size: 14px; color: #1f2937;">{{ p.nom }}</p>
+                  <p class="ending-soon-dates" style="margin: 0; font-size: 12px; color: #6b7280; margin-top: 2px;">Fin prévue: {{ p.dateFin | date:'mediumDate' }}</p>
+                </div>
+              </div>
+              <div class="ending-soon-right" style="display: flex; align-items: center; gap: 12px;">
+                <span class="status-chip" [ngClass]="statutClass(p.statut)">
+                  {{ statutLabel(p.statut) }}
+                </span>
+                <span class="countdown-badge"
+                      style="padding: 4px 10px; font-size: 12px; border-radius: 4px; border: 1px solid"
+                      [ngClass]="countdownClass(p.joursRestants)">
+                  <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;">schedule</mat-icon>
+                  {{ p.joursRestants }} {{ p.joursRestants <= 1 ? 'jour' : 'jours' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- ── Charts Section ── -->
+<!-- ── Charts Section ── -->
+<div class="charts-grid">
+
+  <!-- Row 1: Workload (wider) + Gauge + Status Donut -->
+  <div class="chart-card chart-card--workload">
+    <h3 class="chart-title">Charge de Travail Équipe</h3>
+    <p class="chart-caption">Top 5 employés selon le nombre de projets assignés</p>
+    <div class="chart-container chart-container--wide">
+      <canvas baseChart
+              [type]="'bar'"
+              [datasets]="chartDataWorkload"
+              [labels]="chartLabelsWorkload"
+              [options]="chartOptionsHorizontalBar">
+      </canvas>
+    </div>
+  </div>
+
+  <div class="chart-card chart-card--gauge">
+    <h3 class="chart-title">Taux d'Assignation</h3>
+    <p class="chart-caption">Employés assignés vs non assignés</p>
+    <div class="chart-container">
+      <canvas baseChart
+              [type]="'doughnut'"
+              [datasets]="chartDataGauge"
+              [labels]="chartLabelsGauge"
+              [options]="chartOptionsGauge">
+      </canvas>
+    </div>
+  </div>
+
+  <div class="chart-card chart-card--status">
+    <h3 class="chart-title">Statuts Globaux</h3>
+    <p class="chart-caption">Répartition totale des projets</p>
+    <div class="chart-container">
+      <canvas baseChart
+              [type]="'doughnut'"
+              [datasets]="chartDataDonught"
+              [labels]="chartLabelDonught"
+              [options]="chartOptionsNoScales">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Row 2: Stacked bar full width -->
+  <div class="chart-card chart-card--full">
+    <h3 class="chart-title">Distribution des Projets dans le Temps</h3>
+    <p class="chart-caption">Statut des projets par mois de début assigné</p>
+    <div class="chart-container chart-container--wide">
+      <canvas baseChart
+              [type]="'bar'"
+              [datasets]="chartDataMonth"
+              [labels]="chartLabelsMonth"
+              [options]="chartOptionsStacked">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Row 3: Category pie (narrower) + Timeline (wider) -->
+  <div class="chart-card chart-card--pie">
+    <h3 class="chart-title">Employés par Catégorie</h3>
+    <p class="chart-caption">Répartition selon catégories/compétences</p>
+    <div class="chart-container">
+      <canvas baseChart
+              [type]="'pie'"
+              [datasets]="chartDataPie"
+              [labels]="chartLabelsPie"
+              [options]="chartOptionsNoScales">
+      </canvas>
+    </div>
+  </div>
+
+  <div class="chart-card chart-card--timeline">
+    <h3 class="chart-title">Chronologie des Projets</h3>
+    <p class="chart-caption">Vue temporelle des projets de leur début à leur fin</p>
+    <div class="chart-container chart-container--wide" style="height: 260px;">
+      <canvas baseChart
+              *ngIf="chartDataTimeline.length > 0"
+              [type]="'scatter'"
+              [datasets]="chartDataTimeline"
+              [labels]="chartLabelsTimeline"
+              [options]="chartOptionsTimeline">
+      </canvas>
+    </div>
+  </div>
+
+</div>
+
+
+  </ng-container>
+
+</div>

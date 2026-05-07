@@ -1,0 +1,194 @@
+<div class="page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1>Employés</h1>
+      <p>Gérez les comptes et profils des employés</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCreate()">
+      <mat-icon>person_add</mat-icon> Nouvel employé
+    </button>
+  </div>
+
+  <!-- Feedback -->
+  <div class="alert alert-error" *ngIf="error">
+    <mat-icon>error_outline</mat-icon> {{ error }}
+  </div>
+  <div class="alert alert-success" *ngIf="success">
+    <mat-icon>check_circle_outline</mat-icon> {{ success }}
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading">
+    <mat-spinner diameter="34"></mat-spinner>
+  </div>
+
+  <!-- Filter toggle -->
+  <div class="filter-bar" *ngIf="!loading">
+    <div class="filter-toggle">
+      <button class="filter-btn" [class.filter-btn--active]="filterMode === 'all'" (click)="setFilter('all')">
+        Tous
+      </button>
+      <button class="filter-btn" [class.filter-btn--active]="filterMode === 'assigned'" (click)="setFilter('assigned')">
+        <span class="filter-dot filter-dot--green"></span> Assignés
+        <span class="filter-count filter-count--green" *ngIf="assignedCount > 0">{{ assignedCount }}</span>
+      </button>
+      <button class="filter-btn" [class.filter-btn--active]="filterMode === 'unassigned'" (click)="setFilter('unassigned')">
+        <span class="filter-dot"></span> Non assignés
+        <span class="filter-count" *ngIf="unassignedCount > 0">{{ unassignedCount }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content row: table + optional inline form -->
+  <div class="content-row" [class.split]="showForm">
+
+    <!-- Table column -->
+    <div class="table-col">
+      <mat-card class="table-card" *ngIf="!loading">
+        <table mat-table [dataSource]="pagedEmployees" class="data-table emp-table">
+
+          <!-- Employé column: avatar + nom + prénom -->
+          <ng-container matColumnDef="employee">
+            <th mat-header-cell *matHeaderCellDef>Employé</th>
+            <td mat-cell *matCellDef="let emp">
+              <div class="emp-cell">
+                <div class="emp-avatar">{{ emp.nom?.charAt(0) }}{{ emp.prenom?.charAt(0) }}</div>
+                <div>
+                  <p class="emp-name">{{ emp.nom }} {{ emp.prenom }}</p>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Email -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let emp" class="cell-secondary">{{ emp.email }}</td>
+          </ng-container>
+
+          <!-- Catégorie -->
+          <ng-container matColumnDef="categorie">
+            <th mat-header-cell *matHeaderCellDef>Catégorie</th>
+            <td mat-cell *matCellDef="let emp">
+              <span class="cat-badge">{{ getCategoryName(emp) }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Actions -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let emp">
+              <div class="action-btns">
+                <button class="btn-edit" (click)="openEdit(emp)">✏ Modifier</button>
+                <button class="btn-delete" (click)="delete(emp.id)">✕ Supprimer</button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="showForm ? displayedColumnsSplit : displayedColumns"></tr>
+          <tr mat-row
+              *matRowDef="let row; columns: showForm ? displayedColumnsSplit : displayedColumns;"
+              class="data-row"
+              [class.row-active]="editingId === row.id"></tr>
+
+        </table>
+
+        <div class="empty-state" *ngIf="filteredEmployees.length === 0">
+          <mat-icon>{{ filterMode === 'unassigned' ? 'check_circle_outline' : filterMode === 'assigned' ? 'person_off' : 'people_outline' }}</mat-icon>
+          <p *ngIf="filterMode === 'all'">Aucun employé trouvé.</p>
+          <p *ngIf="filterMode === 'assigned'">Aucun employé n'est encore assigné à un projet.</p>
+          <p *ngIf="filterMode === 'unassigned'">Tous les employés sont assignés à un projet.</p>
+          <button mat-stroked-button (click)="openCreate()" *ngIf="filterMode === 'all'">Créer le premier employé</button>
+        </div>
+
+        <mat-paginator
+          *ngIf="filteredEmployees.length > 0"
+          [length]="filteredEmployees.length"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChange($event)"
+          aria-label="Employés">
+        </mat-paginator>
+      </mat-card>
+    </div>
+
+    <!-- Form column — part of normal page flow, same row as table -->
+    <div class="form-col" *ngIf="showForm">
+      <div class="form-panel">
+
+        <!-- Header -->
+        <div class="form-panel-header">
+          <div>
+            <p class="form-panel-title">{{ editingId ? "Modifier l'employé" : 'Nouvel employé' }}</p>
+            <p class="form-panel-sub">{{ editingId ? 'Mettez à jour les informations' : 'Remplissez les champs ci-dessous' }}</p>
+          </div>
+          <button class="form-close-btn" (click)="cancel()">✕</button>
+        </div>
+
+        <!-- Body -->
+        <div class="form-panel-body">
+          <form [formGroup]="form">
+
+            <p class="field-section-label">Identité</p>
+            <div class="field-row">
+              <mat-form-field appearance="outline" class="field-half">
+                <mat-label>Nom</mat-label>
+                <input matInput formControlName="nom" placeholder="Dupont" />
+                <mat-error *ngIf="form.get('nom')?.hasError('required')">Requis</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="field-half">
+                <mat-label>Prénom</mat-label>
+                <input matInput formControlName="prenom" placeholder="Jean" />
+                <mat-error *ngIf="form.get('prenom')?.hasError('required')">Requis</mat-error>
+              </mat-form-field>
+            </div>
+
+            <p class="field-section-label">Compte</p>
+            <mat-form-field appearance="outline" style="width:100%">
+              <mat-label>Adresse email</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="jean@exemple.com" />
+              <mat-icon matSuffix style="color:#87bba2;font-size:18px">mail_outline</mat-icon>
+              <mat-error *ngIf="form.get('email')?.hasError('required')">Requis</mat-error>
+              <mat-error *ngIf="form.get('email')?.hasError('email')">Email invalide</mat-error>
+            </mat-form-field>
+
+            <div class="field-row">
+              <mat-form-field appearance="outline" class="field-half">
+                <mat-label>{{ editingId ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe' }}</mat-label>
+                <input matInput formControlName="motDePasse" [type]="hidePassword ? 'password' : 'text'" placeholder="••••••••" />
+                <button mat-icon-button matSuffix type="button"
+                        (click)="hidePassword = !hidePassword"
+                        [attr.aria-label]="hidePassword ? 'Afficher' : 'Masquer'">
+                  <mat-icon style="color:#87bba2;font-size:18px">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="form.get('motDePasse')?.hasError('required')">Requis</mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="field-half">
+                <mat-label>Catégorie</mat-label>
+                <mat-select formControlName="categorieId">
+                  <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('categorieId')?.hasError('required')">Requis</mat-error>
+              </mat-form-field>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="form-panel-footer">
+          <button mat-button type="button" (click)="cancel()">Annuler</button>
+          <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+            {{ editingId ? 'Enregistrer' : "Créer l'employé" }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

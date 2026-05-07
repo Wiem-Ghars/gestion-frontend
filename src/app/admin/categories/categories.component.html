@@ -1,0 +1,170 @@
+<div class="page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1>Catégories</h1>
+      <p>Organisez vos employés par catégorie</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon> Nouvelle catégorie
+    </button>
+  </div>
+
+  <!-- Feedback -->
+  <div class="alert alert-error" *ngIf="error">
+    <mat-icon>error_outline</mat-icon> {{ error }}
+  </div>
+  <div class="alert alert-success" *ngIf="success">
+    <mat-icon>check_circle_outline</mat-icon> {{ success }}
+  </div>
+
+  <!-- Create / Edit form card -->
+  <mat-card class="cat-form-card" *ngIf="showForm">
+    <div class="cat-form-header">
+      <div class="cat-form-title-row">
+        <div class="cat-form-icon">
+          <mat-icon>{{ editingId ? 'edit' : 'category' }}</mat-icon>
+        </div>
+        <div>
+          <p class="cat-form-title">{{ editingId ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}</p>
+          <p class="cat-form-sub">{{ editingId ? 'Changer le nom de la catégorie' : 'Ajouter une nouvelle catégorie d\'employés' }}</p>
+        </div>
+      </div>
+      <button mat-icon-button (click)="cancel()" matTooltip="Fermer">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="cat-form-body">
+      <form [formGroup]="form">
+        <mat-form-field appearance="outline" class="cat-name-field">
+          <mat-label>Nom de la catégorie</mat-label>
+          <input matInput formControlName="nom" placeholder="Ex: Développement, Design…" />
+          <mat-error *ngIf="form.get('nom')?.hasError('required')">Requis</mat-error>
+          <mat-error *ngIf="form.get('nom')?.hasError('minlength')">Minimum 2 caractères</mat-error>
+        </mat-form-field>
+      </form>
+    </div>
+    <div class="cat-form-footer">
+      <button mat-button (click)="cancel()">Annuler</button>
+      <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
+        <mat-icon>{{ editingId ? 'save' : 'add' }}</mat-icon>
+        {{ editingId ? 'Enregistrer' : 'Créer' }}
+      </button>
+    </div>
+  </mat-card>
+
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading">
+    <mat-spinner diameter="34"></mat-spinner>
+  </div>
+
+  <!-- Summary + grid -->
+  <div class="two-panel" *ngIf="!loading && categories.length > 0">
+    <div class="left-panel">
+
+    <!-- Summary bar -->
+    <div class="cat-summary">
+      <div class="cat-summary-stat">
+        <span class="cat-summary-value">{{ categories.length }}</span>
+        <span class="cat-summary-label">catégorie{{ categories.length > 1 ? 's' : '' }} au total</span>
+      </div>
+      <p class="cat-summary-hint">
+        Chaque employé est rattaché à une catégorie lors de sa création.
+      </p>
+    </div>
+
+    <!-- Card grid -->
+    <div class="cat-grid">
+      <mat-card class="cat-card" *ngFor="let cat of pagedCategories; let i = index"
+                [class.active-card]="selectedCategory?.id === cat.id"
+                (click)="selectCategory(cat)"
+                style="cursor: pointer;">
+        <div class="cat-card-inner">
+          <div class="cat-card-avatar" [ngClass]="avatarClass(i)">
+            {{ cat.nom.charAt(0).toUpperCase() }}
+          </div>
+          <div class="cat-card-info">
+            <p class="cat-card-name">{{ cat.nom }}</p>
+            <p class="cat-card-label">{{ employeeCountMap[cat.id] ?? 0 }} employé(s)</p>
+            <p class="cat-card-label">Catégorie</p>
+          </div>
+          <div class="cat-card-actions">
+            <button mat-icon-button class="btn-edit" (click)="openEdit(cat); $event.stopPropagation()" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button class="btn-delete" (click)="delete(cat.id); $event.stopPropagation()" matTooltip="Supprimer">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <mat-paginator *ngIf="showPaginator"
+      [length]="categories.length"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      aria-label="Catégories">
+    </mat-paginator>
+
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <mat-card class="cat-detail-card" *ngIf="selectedCategory; else noSelection">
+        <div class="cat-detail-header">
+          <div style="display:flex; align-items:center; gap: 10px;">
+            <mat-icon style="color:#70c1b3;">manage_accounts</mat-icon>
+            <div>
+              <h3 style="margin:0; font-size: 16px; color:#1a2e2f;">{{ selectedCategory.nom }}</h3>
+              <p style="margin: 2px 0 0; font-size:12px; color:#87bba2;">
+                {{ categoryEmployees.length }} employé(s) rattaché(s)
+              </p>
+            </div>
+          </div>
+          <button mat-icon-button (click)="selectedCategory = null" matTooltip="Fermer">
+            <mat-icon style="font-size:18px; color:#87bba2;">close</mat-icon>
+          </button>
+        </div>
+
+        <div class="loading-wrap" *ngIf="isLoadingEmployees" style="padding: 30px; text-align: center;">
+          <mat-spinner diameter="28" style="margin:0 auto;"></mat-spinner>
+        </div>
+
+        <div class="cat-detail-list" *ngIf="!isLoadingEmployees && categoryEmployees.length > 0">
+          <div class="emp-row" *ngFor="let emp of categoryEmployees">
+            <div class="emp-avatar">{{ emp.nom.charAt(0).toUpperCase() }}{{ emp.prenom?.charAt(0)?.toUpperCase() }}</div>
+            <div class="emp-info">
+              <div class="emp-name">{{ emp.nom }} {{ emp.prenom }}</div>
+              <div class="emp-email">{{ emp.email }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!isLoadingEmployees && categoryEmployees.length === 0" style="padding: 40px 20px;">
+          <mat-icon style="font-size: 40px; height: 40px; width: 40px; color:#c9dcd8; margin-bottom: 10px;">group_off</mat-icon>
+          <p style="margin:0; color:#5a7f82; font-size: 14px;">Aucun employé dans cette catégorie.</p>
+        </div>
+      </mat-card>
+
+      <ng-template #noSelection>
+        <div class="no-selection-card">
+          <mat-icon style="font-size: 48px; height: 48px; width: 48px; color:#c9dcd8;">ads_click</mat-icon>
+          <p style="margin-top: 16px; color:#5a7f82; font-size: 15px;">Sélectionnez une catégorie pour voir ses employés</p>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!loading && categories.length === 0">
+    <mat-icon>category</mat-icon>
+    <p>Aucune catégorie créée.</p>
+    <button mat-stroked-button (click)="openCreate()">Créer la première catégorie</button>
+  </div>
+
+</div>

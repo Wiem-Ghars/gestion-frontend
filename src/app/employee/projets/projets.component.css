@@ -1,0 +1,268 @@
+/* ─── Two-column layout ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ─── Page header ─── */
+.page-header.single {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  margin: 0 0 3px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a2e2f;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #87bba2;
+}
+
+/* ─── Loading ─── */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+/* ─── Sidebar card ─── */
+.sidebar-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a2e2f;
+}
+
+.sidebar-count {
+  background: rgba(112, 193, 179, 0.15);
+  color: #3b6064;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 99px;
+}
+
+/* ─── Project list ─── */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+}
+
+.project-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.project-btn:hover {
+  background: #f8faf9;
+  border-color: #dde8e6;
+}
+
+.project-btn.selected {
+  background: rgba(112, 193, 179, 0.1);
+  border-color: #70c1b3;
+}
+
+.project-btn-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.pb-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a2e2f;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pb-desc {
+  font-size: 11px;
+  color: #87bba2;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Main column ─── */
+.main-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ─── Detail card ─── */
+.detail-card .mat-mdc-card-content {
+  padding: 20px !important;
+}
+
+.detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.detail-text { flex: 1; min-width: 0; }
+
+.detail-name {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a2e2f;
+}
+
+.detail-desc {
+  margin: 0;
+  font-size: 13px;
+  color: #87bba2;
+  line-height: 1.55;
+}
+
+.status-chip--lg {
+  font-size: 12px !important;
+  padding: 4px 14px !important;
+}
+
+/* ─── Team card ─── */
+.team-card {
+  overflow: hidden;
+  padding: 0;
+}
+
+.team-card-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+/* ─── "Vous" badge ─── */
+.me-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 600;
+  background: #3b6064;
+  color: #fff;
+  vertical-align: middle;
+}
+
+/* ─── Highlight current user's row ─── */
+tr.row-me td {
+  background: rgba(112, 193, 179, 0.06);
+}
+
+/* ─── Empty state ─── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 16px;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  color: #c9e4ca !important;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 13px;
+  color: #87bba2;
+}
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ── Project meta (dates + countdown) ──────────────────────── */
+.pb-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.pb-dates {
+  font-size: 10px;
+  color: #87bba2;
+}
+
+/* ── Countdown badge ───────────────────────────────────────── */
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.countdown-badge--lg {
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+}
+
+.countdown-ok      { background: #d1fae5; color: #065f46; }
+.countdown-warning { background: #fef3c7; color: #b45309; }
+.countdown-urgent  { background: rgba(239, 68, 68, 0.1); color: #c0392b; }
+
+/* ── Detail badges column ──────────────────────────────────── */
+.detail-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.detail-dates {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #87bba2;
+}
+

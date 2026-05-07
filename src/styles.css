@@ -1,1 +1,593 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ─── Reset & Base ─────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f0f4f3;
+  color: #3b6064;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Sidenav shell ────────────────────────────────────────── */
+.mat-drawer-container {
+  background: #f0f4f3 !important;
+}
+
+.mat-drawer {
+  background: #3b6064 !important;
+  border-right: none !important;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.08) !important;
+  width: 228px !important;
+}
+
+/* ─── Nav list items ────────────────────────────────────────── */
+.mat-mdc-list-base {
+  padding: 8px 10px !important;
+}
+
+.mat-mdc-list-item {
+  border-radius: 9px !important;
+  margin-bottom: 2px !important;
+  height: 42px !important;
+  --mdc-list-list-item-label-text-color: rgba(201, 228, 202, 0.8);
+  --mdc-list-list-item-label-text-size: 13px;
+  --mdc-list-list-item-label-text-font: 'Inter', system-ui, sans-serif;
+  --mdc-list-list-item-hover-state-layer-color: rgba(112, 193, 179, 0.12);
+  --mdc-list-list-item-hover-state-layer-opacity: 1;
+  --mdc-list-list-item-focus-state-layer-opacity: 0;
+}
+
+.mat-mdc-list-item .mat-icon {
+  color: rgba(201, 228, 202, 0.65) !important;
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* ─── Active nav link ───────────────────────────────────────── */
+.active-link {
+  background: rgba(112, 193, 179, 0.2) !important;
+  --mdc-list-list-item-label-text-color: #ffffff !important;
+}
+
+.active-link .mat-icon {
+  color: #70c1b3 !important;
+}
+
+/* ─── Cards ─────────────────────────────────────────────────── */
+.mat-mdc-card {
+  --mdc-elevated-card-container-color: #ffffff;
+  --mdc-elevated-card-container-shape: 12px;
+  border: 1px solid #dde8e6 !important;
+  box-shadow: 0 1px 3px rgba(59, 96, 100, 0.06) !important;
+  border-radius: 12px !important;
+}
+
+/* ─── Form fields — modern filled style ─────────────────────── */
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color:       transparent;
+  --mdc-outlined-text-field-hover-outline-color: transparent;
+  --mdc-outlined-text-field-focus-outline-color: transparent;
+  --mdc-outlined-text-field-error-outline-color: transparent;
+  --mdc-outlined-text-field-label-text-color:    #5a7f82;
+  --mdc-outlined-text-field-input-text-color:    #1a2e2f;
+  --mdc-outlined-text-field-container-shape:     12px;
+  --mdc-outlined-text-field-label-text-font:     'Inter', system-ui, sans-serif;
+  --mdc-outlined-text-field-input-text-font:     'Inter', system-ui, sans-serif;
+  --mdc-outlined-text-field-label-text-size:     13px;
+  --mdc-outlined-text-field-input-text-size:     13px;
+}
+
+/* Filled background — replaces the border */
+.mat-mdc-form-field .mdc-text-field--outlined {
+  background: #f0f5f4 !important;
+  border-radius: 12px !important;
+  transition: background 0.15s, box-shadow 0.15s !important;
+}
+
+.mat-mdc-form-field:hover .mdc-text-field--outlined {
+  background: #e8f0ee !important;
+}
+
+/* Focus: white bg + teal ring */
+.mat-mdc-form-field.mat-focused .mdc-text-field--outlined {
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px #70c1b3 !important;
+}
+
+/* Error: red ring */
+.mat-mdc-form-field.mat-form-field-invalid .mdc-text-field--outlined {
+  background: rgba(239, 68, 68, 0.05) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Kill the notched outline border on ALL form fields (inputs + selects) */
+.mat-mdc-form-field .mdc-notched-outline__leading,
+.mat-mdc-form-field .mdc-notched-outline__notch,
+.mat-mdc-form-field .mdc-notched-outline__trailing {
+  border-color: transparent !important;
+  border-width: 0 !important;
+}
+
+/* Compact height */
+.mat-mdc-form-field .mat-mdc-form-field-infix {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  min-height: 40px !important;
+}
+
+/* Center label vertically at rest */
+.mat-mdc-form-field .mdc-floating-label:not(.mdc-floating-label--float-above) {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+/* Floating label — white pill so it doesn't overlap the ring */
+.mat-mdc-form-field .mdc-floating-label--float-above {
+  background: #ffffff;
+  padding: 0 4px !important;
+  margin-left: -4px;
+  border-radius: 4px;
+}
+
+/* Focused label color */
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: #70c1b3 !important;
+}
+
+/* ─── Raised / primary button ───────────────────────────────── */
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color:    #3b6064;
+  --mdc-protected-button-label-text-color:   #ffffff;
+  --mdc-protected-button-container-shape:    10px;
+  --mdc-protected-button-label-text-font:    'Inter', system-ui, sans-serif;
+  --mdc-protected-button-label-text-size:    13px;
+  --mdc-protected-button-label-text-weight:  600;
+  box-shadow: none !important;
+  transition: background 0.15s, box-shadow 0.15s !important;
+  letter-spacing: 0.01em !important;
+}
+
+.mat-mdc-raised-button.mat-primary:hover:not(:disabled) {
+  background-color: #2d4a4d !important;
+  box-shadow: 0 4px 14px rgba(59, 96, 100, 0.25) !important;
+}
+
+.mat-mdc-raised-button.mat-primary:active:not(:disabled) {
+  transform: scale(0.98) !important;
+}
+
+.mat-mdc-raised-button:disabled {
+  background-color: #c9ddd8 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* ─── Text / cancel button ───────────────────────────────────── */
+.mat-mdc-button {
+  --mdc-text-button-label-text-font:   'Inter', system-ui, sans-serif;
+  --mdc-text-button-label-text-size:   13px;
+  --mdc-text-button-label-text-weight: 500;
+  --mdc-text-button-container-shape:   10px;
+  color: #5a7f82 !important;
+  letter-spacing: 0.01em !important;
+  transition: background 0.15s !important;
+}
+
+.mat-mdc-button:hover:not(:disabled) {
+  background: rgba(112, 193, 179, 0.1) !important;
+}
+
+/* ─── Stroked / outlined button ──────────────────────────────── */
+.mat-mdc-outlined-button,
+.mat-mdc-stroked-button {
+  --mdc-outlined-button-label-text-font:   'Inter', system-ui, sans-serif;
+  --mdc-outlined-button-label-text-size:   13px;
+  --mdc-outlined-button-label-text-weight: 500;
+  --mdc-outlined-button-container-shape:   10px;
+  --mdc-outlined-button-outline-color:     #b0d4cc;
+  color: #3b6064 !important;
+  letter-spacing: 0.01em !important;
+  transition: background 0.15s, border-color 0.15s !important;
+}
+
+.mat-mdc-outlined-button:hover:not(:disabled),
+.mat-mdc-stroked-button:hover:not(:disabled) {
+  background: rgba(112, 193, 179, 0.08) !important;
+  border-color: #70c1b3 !important;
+}
+
+/* ─── Icon button ────────────────────────────────────────────── */
+.mat-mdc-icon-button {
+  --mdc-icon-button-state-layer-size: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 9px !important;
+  transition: background 0.12s !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Round the ripple/state layers to match the button shape */
+.mat-mdc-icon-button .mat-mdc-button-persistent-ripple,
+.mat-mdc-icon-button .mat-mdc-button-ripple,
+.mat-mdc-icon-button .mat-ripple {
+  border-radius: 9px !important;
+}
+
+.mat-mdc-icon-button:hover:not(:disabled) {
+  background: rgba(112, 193, 179, 0.12) !important;
+}
+
+/* ─── Global mat-icon fix — prevent clipping ─────────────────── */
+mat-icon {
+  overflow: visible !important;
+  flex-shrink: 0;
+}
+
+.mat-mdc-icon-button mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  line-height: 18px !important;
+}
+
+/* ─── Spinner ───────────────────────────────────────────────── */
+.mat-mdc-progress-spinner circle {
+  stroke: #70c1b3 !important;
+}
+
+/* ─── Tables ────────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ─── mat-table flex layout fix (applies to every mat-table) ── */
+/* stretch: every cell fills full row height → border-bottom aligns across all columns */
+.mat-mdc-header-row,
+.mat-mdc-row { display: flex !important; width: 100% !important; align-items: stretch !important; }
+
+/* cells center their content; default equal-width — components override per-column */
+.mat-mdc-header-cell,
+.mat-mdc-cell { display: flex !important; align-items: center !important; flex: 1 0 0 !important; }
+
+.data-table .mat-mdc-header-row {
+  background: #f8faf9;
+}
+
+.data-table .mat-mdc-header-cell {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #87bba2 !important;
+  border-bottom: 1px solid #eef2f1 !important;
+  padding: 12px 16px !important;
+}
+
+.data-table .mat-mdc-cell {
+  font-size: 13px !important;
+  color: #3b6064 !important;
+  border-bottom: 1px solid #eef2f1 !important;
+  padding: 14px 16px !important;
+}
+
+.data-row {
+  transition: background 0.12s;
+}
+
+.data-row:hover .mat-mdc-cell {
+  background: #f8faf9;
+}
+
+.cell-main {
+  font-weight: 500;
+  color: #1a2e2f;
+}
+
+.cell-secondary {
+  color: #87bba2 !important;
+}
+
+/* ─── Page layout helpers ───────────────────────────────────── */
+/* Padding is provided by the layout shell's .page-area wrapper */
+.page {
+  padding: 0;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0 0 3px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a2e2f;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #87bba2;
+}
+
+/* ─── Alerts ────────────────────────────────────────────────── */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.alert mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #c0392b;
+}
+
+.alert-error mat-icon { color: #c0392b !important; }
+
+.alert-success {
+  background: rgba(112, 193, 179, 0.12);
+  border: 1px solid rgba(112, 193, 179, 0.3);
+  color: #2d6a4f;
+}
+
+.alert-success mat-icon { color: #2d6a4f !important; }
+
+/* ─── Form card ─────────────────────────────────────────────── */
+.form-card {
+  margin-bottom: 20px;
+}
+
+.form-card .mat-mdc-card-header {
+  padding: 20px 20px 0 !important;
+}
+
+.form-card .mat-mdc-card-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #1a2e2f !important;
+}
+
+.form-card .mat-mdc-card-content {
+  padding: 16px 20px 0 !important;
+}
+
+.form-card .mat-mdc-card-actions {
+  padding: 12px 20px 20px !important;
+  gap: 8px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 4px 16px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 0 0;
+}
+
+/* ─── Table card ────────────────────────────────────────────── */
+.table-card {
+  overflow: hidden;
+}
+
+.table-card .mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+/* ─── Loading ───────────────────────────────────────────────── */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+/* ─── Empty state ───────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 24px;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  color: #c9e4ca !important;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+  color: #87bba2;
+}
+
+/* ─── Status chips ──────────────────────────────────────────── */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.chip-attente  { background: #fef3c7; color: #b45309; }
+.chip-cours    { background: #d1fae5; color: #065f46; }
+.chip-termine  { background: #FFCCCB; color: #681215; }
+.chip-active   { background: #d1fae5; color: #065f46; }
+.chip-upcoming { background: #dbeafe; color: #1e40af; }
+.chip-finished { background: #f1f5f9; color: #64748b; }
+
+/* ─── Action buttons in tables ──────────────────────────────── */
+.col-actions {
+  justify-content: flex-end !important;
+}
+
+/* ─── Employee cell — force flex so avatar + name sit side by side ── */
+.emp-cell {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 0 !important;
+}
+
+.emp-avatar {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  border-radius: 50% !important;
+  background: rgba(112, 193, 179, 0.22) !important;
+  border: 1.5px solid rgba(112, 193, 179, 0.45) !important;
+  color: #2d6a5e !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* ─── Category cards — allow icon overflow ───────────────────── */
+mat-card.cat-card,
+mat-card.cat-card .mat-mdc-card {
+  overflow: visible !important;
+}
+
+/* ─── Confirm / delete dialog panel ────────────────────────── */
+.confirm-dialog-panel .mat-mdc-dialog-container,
+.confirm-dialog-panel .mdc-dialog__surface {
+  border-radius: 16px !important;
+  padding: 0 !important;
+  overflow: hidden;
+  max-width: 400px !important;
+}
+
+/* ─── Add-member dialog panel ───────────────────────────────── */
+.add-member-panel .mat-mdc-dialog-container {
+  border-radius: 16px !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.add-member-panel .mdc-dialog__surface {
+  border-radius: 16px !important;
+  padding: 0 !important;
+}
+
+/* ─── Select dropdown panel ─────────────────────────────────── */
+.mat-mdc-select-panel {
+  border-radius: 14px !important;
+  box-shadow: 0 8px 28px rgba(59, 96, 100, 0.13) !important;
+  border: 1px solid #eef2f1 !important;
+  padding: 6px !important;
+  background: #ffffff !important;
+}
+
+/* Each option */
+.mat-mdc-option {
+  border-radius: 9px !important;
+  min-height: 38px !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: 13px !important;
+  color: #3b6064 !important;
+  padding: 0 10px !important;
+  margin-bottom: 1px !important;
+}
+
+.mat-mdc-option .mdc-list-item__primary-text {
+  font-size: 13px !important;
+  color: #3b6064 !important;
+}
+
+/* Hover */
+.mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background: rgba(112, 193, 179, 0.1) !important;
+}
+
+/* Selected */
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background: rgba(112, 193, 179, 0.13) !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #1a2e2f !important;
+  font-weight: 600 !important;
+}
+
+/* Checkmark */
+.mat-pseudo-checkbox-full {
+  border-color: #c9e4ca !important;
+  border-radius: 5px !important;
+}
+
+.mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked {
+  background-color: #3b6064 !important;
+  border-color: #3b6064 !important;
+}
+
+/* Arrow inside the select trigger */
+.mat-mdc-select-arrow svg {
+  fill: #87bba2 !important;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+.mat-drawer::-webkit-scrollbar { width: 4px; }
+.mat-drawer::-webkit-scrollbar-thumb {
+  background: rgba(112, 193, 179, 0.3);
+  border-radius: 99px;
+}
+
+/* ─── Paginator ─────────────────────────────────────────────── */
+mat-paginator {
+  background: transparent !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+@media (max-width: 768px) {
+  .page { padding: 16px; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Fix: mat-drawer-content applies transform:translate3d(0,0,0)
+   as a GPU compositing hint. That makes it the containing block
+   for every position:fixed descendant, trapping them inside the
+   content column instead of the real viewport. Safe to neutralise
+   here because the sidenav is mode="side" opened and never
+   animated — no transition transform is needed.                 */
+.mat-drawer-content {
+  transform: none !important;
+  -webkit-transform: none !important;
+}

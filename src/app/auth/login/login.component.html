@@ -1,0 +1,96 @@
+<div class="login-container">
+
+  <!-- Flowing lines background -->
+  <svg class="login-bg-svg" viewBox="0 0 1440 900"
+       preserveAspectRatio="xMidYMid slice"
+       xmlns="http://www.w3.org/2000/svg">
+    <path class="flow-path fp-1"
+      d="M-100 700 Q200 500 500 600 Q800 700 1100 500 Q1300 400 1540 460"/>
+    <path class="flow-path fp-2"
+      d="M-100 500 Q180 340 420 440 Q660 540 920 380 Q1120 260 1540 320"/>
+    <path class="flow-path fp-3"
+      d="M-100 820 Q280 660 520 740 Q760 820 1020 640 Q1220 520 1540 580"/>
+    <path class="flow-path fp-4"
+      d="M-100 260 Q260 140 480 240 Q700 340 960 200 Q1140 100 1540 180"/>
+    <path class="flow-path fp-5"
+      d="M-100 380 Q230 240 450 340 Q670 440 940 300 Q1140 200 1540 260"/>
+  </svg>
+
+  <mat-card class="login-card">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 18 18" fill="none" width="18" height="18">
+          <rect x="2"  y="2"  width="6" height="6" rx="1.5" fill="white"/>
+          <rect x="10" y="2"  width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+          <rect x="2"  y="10" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+          <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".25"/>
+        </svg>
+      </div>
+      <span class="brand-name">Gestion Projets</span>
+    </div>
+
+    <mat-card-content>
+
+      <!-- Header -->
+      <h1 class="card-title">Connexion</h1>
+      <p class="card-subtitle">Connectez-vous à votre compte</p>
+
+      <!-- Error banner -->
+      <div class="error-banner" *ngIf="errorMsg">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <span>{{ errorMsg }}</span>
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput
+                 type="email"
+                 formControlName="email"
+                 placeholder="votre@email.com"/>
+          <mat-icon matSuffix class="field-icon">mail_outline</mat-icon>
+          <mat-error *ngIf="email?.hasError('required')">Email requis</mat-error>
+          <mat-error *ngIf="email?.hasError('email')">Email invalide</mat-error>
+        </mat-form-field>
+
+        <!-- Password -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput
+                 [type]="hidePassword ? 'password' : 'text'"
+                 formControlName="motDePasse"
+                 placeholder="••••••••"/>
+          <button mat-icon-button matSuffix
+                  type="button"
+                  class="pw-toggle"
+                  (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="hidePassword ? 'Afficher' : 'Masquer'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="motDePasse?.hasError('required')">Mot de passe requis</mat-error>
+          <mat-error *ngIf="motDePasse?.hasError('minlength')">Minimum 4 caractères</mat-error>
+        </mat-form-field>
+
+        <!-- Submit -->
+        <button mat-raised-button
+                color="primary"
+                class="login-btn"
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading">
+          <mat-spinner diameter="20"
+                       *ngIf="isLoading"
+                       class="btn-spinner">
+          </mat-spinner>
+          <span *ngIf="!isLoading">Se connecter</span>
+        </button>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+</div>

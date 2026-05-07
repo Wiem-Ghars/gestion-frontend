@@ -1,0 +1,299 @@
+<div class="page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1>Projets</h1>
+      <p>Gérez les projets et leurs équipes</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon> Nouveau projet
+    </button>
+  </div>
+
+  <!-- Feedback -->
+  <div class="alert alert-error" *ngIf="error">
+    <mat-icon>error_outline</mat-icon> {{ error }}
+  </div>
+  <div class="alert alert-success" *ngIf="success">
+    <mat-icon>check_circle_outline</mat-icon> {{ success }}
+  </div>
+
+  <!-- ── Create / Edit form card ── -->
+  <mat-card class="proj-form-card" *ngIf="showProjectForm">
+    <div class="proj-form-header">
+      <div class="proj-form-title-row">
+        <div class="proj-form-icon">
+          <mat-icon>{{ editingId ? 'edit' : 'folder_open' }}</mat-icon>
+        </div>
+        <div>
+          <p class="proj-form-title">{{ editingId ? 'Modifier le projet' : 'Nouveau projet' }}</p>
+          <p class="proj-form-sub">Remplissez les informations du projet</p>
+        </div>
+      </div>
+      <button mat-icon-button (click)="cancelProjectForm()" matTooltip="Fermer">
+        <mat-icon style="color:#87bba2">close</mat-icon>
+      </button>
+    </div>
+    <div class="proj-form-body">
+      <form [formGroup]="projectForm" class="proj-field-row">
+        <mat-form-field appearance="outline" class="proj-field-grow">
+          <mat-label>Nom</mat-label>
+          <input matInput formControlName="nom" placeholder="Nom du projet" />
+          <mat-error *ngIf="projectForm.get('nom')?.hasError('required')">Requis</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="proj-field-grow">
+          <mat-label>Description</mat-label>
+          <input matInput formControlName="description" placeholder="Description (optionnel)" />
+        </mat-form-field>
+
+      <div class="proj-date-row">
+        <mat-form-field appearance="outline" class="proj-date-field">
+          <mat-label>Date début</mat-label>
+          <input matInput [matDatepicker]="dpDebut" formControlName="dateDebut"
+                 placeholder="JJ/MM/AAAA" />
+          <mat-datepicker-toggle matSuffix [for]="dpDebut">
+            <mat-icon matDatepickerToggleIcon>calendar_month</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #dpDebut></mat-datepicker>
+          <mat-error>Requis</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="proj-date-field">
+          <mat-label>Date fin</mat-label>
+          <input matInput [matDatepicker]="dpFin" formControlName="dateFin"
+                 placeholder="JJ/MM/AAAA" />
+          <mat-datepicker-toggle matSuffix [for]="dpFin">
+            <mat-icon matDatepickerToggleIcon>calendar_month</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #dpFin></mat-datepicker>
+          <mat-error>Requis</mat-error>
+        </mat-form-field>
+      </div>
+      </form>
+    </div>
+    <div class="proj-form-footer">
+      <button mat-button (click)="cancelProjectForm()" style="color:#87bba2">Annuler</button>
+      <button mat-raised-button color="primary" (click)="submitProject()">
+        <mat-icon>{{ editingId ? 'save' : 'add' }}</mat-icon>
+        {{ editingId ? 'Enregistrer' : 'Créer' }}
+      </button>
+    </div>
+  </mat-card>
+
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading">
+    <mat-spinner diameter="34"></mat-spinner>
+  </div>
+
+  <!-- ── Two-panel layout ── -->
+  <div class="two-panel" *ngIf="!loading">
+
+    <!-- LEFT: project list -->
+    <mat-card class="proj-list-card">
+      <div class="panel-header">
+        <span class="panel-title">Projets</span>
+        <span class="panel-count">{{ filteredProjets.length }}</span>
+      </div>
+
+      <!-- Status filter toggle -->
+      <div class="sidebar-filter">
+        <div class="filter-toggle">
+          <button class="filter-btn" [class.filter-btn--active]="statusFilter === 'all'" (click)="setStatusFilter('all')">
+            Tous
+          </button>
+          <button class="filter-btn" [class.filter-btn--active]="statusFilter === 'EN_ATTENTE'" (click)="setStatusFilter('EN_ATTENTE')">
+            <span class="filter-dot filter-dot--attente"></span> En attente
+            <span class="filter-count filter-count--attente" *ngIf="countAttente > 0">{{ countAttente }}</span>
+          </button>
+          <button class="filter-btn" [class.filter-btn--active]="statusFilter === 'EN_COURS'" (click)="setStatusFilter('EN_COURS')">
+            <span class="filter-dot filter-dot--cours"></span> En cours
+            <span class="filter-count filter-count--cours" *ngIf="countCours > 0">{{ countCours }}</span>
+          </button>
+          <button class="filter-btn" [class.filter-btn--active]="statusFilter === 'TERMINE'" (click)="setStatusFilter('TERMINE')">
+            <span class="filter-dot filter-dot--termine"></span> Terminé
+            <span class="filter-count filter-count--termine" *ngIf="countTermine > 0">{{ countTermine }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="proj-list" *ngIf="filteredProjets.length > 0; else emptyList">
+        <button
+          type="button"
+          class="proj-item"
+          *ngFor="let p of pagedProjets"
+          [class.active]="selectedProjet?.id === p.id"
+          (click)="selectProject(p)">
+          <div class="proj-item-top">
+            <span class="proj-item-name">{{ p.nom }}</span>
+            <span class="status-chip" [ngClass]="statutClass(p.statut)">
+              {{ statutLabel(p.statut) }}
+            </span>
+          </div>
+          <p class="proj-item-desc">{{ p.description || 'Sans description' }}</p>
+          <div class="proj-item-meta">
+            <span class="proj-item-dates" *ngIf="p.dateDebut">
+              📅 {{ p.dateDebut }} → {{ p.dateFin || '…' }}
+            </span>
+            <span class="countdown-badge" *ngIf="p.joursRestants != null && p.statut !== 'TERMINE'"
+                  [ngClass]="countdownClass(p.joursRestants)">
+              {{ p.joursRestants }} j restants
+            </span>
+          </div>
+          <div class="proj-item-actions">
+            <button mat-icon-button class="btn-edit item-action-btn"
+                    (click)="openEdit(p, $event)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button class="btn-delete item-action-btn"
+                    (click)="deleteProject(p.id, $event)" matTooltip="Supprimer">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </button>
+      </div>
+
+      <ng-template #emptyList>
+        <ng-container *ngIf="projets.length === 0">
+          <div class="empty-state">
+            <mat-icon>folder_open</mat-icon>
+            <p>Aucun projet.</p>
+            <button mat-stroked-button (click)="openCreate()">Créer le premier projet</button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="projets.length > 0">
+          <div class="empty-state">
+            <mat-icon>filter_list_off</mat-icon>
+            <p>Aucun projet avec ce statut.</p>
+          </div>
+        </ng-container>
+      </ng-template>
+
+      <mat-paginator
+        *ngIf="filteredProjets.length > 0"
+        [length]="filteredProjets.length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)"
+        aria-label="Projets"
+        class="proj-paginator">
+      </mat-paginator>
+    </mat-card>
+
+    <!-- RIGHT: project detail -->
+    <div class="proj-detail" *ngIf="selectedProjet; else noSelection">
+
+      <!-- Project info banner -->
+      <mat-card class="detail-banner">
+        <div class="banner-left">
+          <div class="banner-icon">
+            <mat-icon>folder</mat-icon>
+          </div>
+          <div>
+            <div class="banner-name-row">
+              <h2 class="banner-name">{{ selectedProjet.nom }}</h2>
+              <span class="status-chip status-chip--lg" [ngClass]="statutClass(selectedProjet.statut)">
+                {{ statutLabel(selectedProjet.statut) }}
+              </span>
+            </div>
+            <p class="banner-desc">{{ selectedProjet.description || 'Aucune description.' }}</p>
+            <p class="banner-dates" *ngIf="selectedProjet.dateDebut">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px; margin-right: 6px;">calendar_month</mat-icon>
+              {{ selectedProjet.dateDebut }} → {{ selectedProjet.dateFin || '…' }}
+            </p>
+          </div>
+        </div>
+        <div class="banner-right">
+          <span class="countdown-badge countdown-badge--lg"
+                *ngIf="selectedProjet.joursRestants != null && selectedProjet.statut !== 'TERMINE'"
+                [ngClass]="countdownClass(selectedProjet.joursRestants)"
+                style="padding: 8px 16px !important; font-size: 14px !important;">
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px; margin-right: 6px; vertical-align: middle;">schedule</mat-icon>
+            {{ selectedProjet.joursRestants }} jours restants
+          </span>
+        </div>
+      </mat-card>
+
+      <!-- Team card -->
+      <mat-card class="team-card">
+
+        <!-- Team header -->
+        <div class="team-header">
+          <div>
+            <span class="panel-title">Équipe</span>
+            <span class="panel-count" style="margin-left:8px">{{ teamAffectations.length }}</span>
+          </div>
+          <button mat-raised-button color="primary" class="add-member-btn"
+                  (click)="openAddMember()">
+            <mat-icon>person_add</mat-icon> Ajouter un membre
+          </button>
+        </div>
+
+        <!-- Team loading -->
+        <div class="loading-wrap" *ngIf="isLoadingTeam">
+          <mat-spinner diameter="28"></mat-spinner>
+        </div>
+
+        <!-- Team table -->
+        <div class="team-table-wrap" *ngIf="!isLoadingTeam && teamAffectations.length > 0">
+          <table mat-table [dataSource]="teamAffectations" class="data-table">
+
+            <ng-container matColumnDef="employee">
+              <th mat-header-cell *matHeaderCellDef>Membre</th>
+              <td mat-cell *matCellDef="let a">
+                <div class="emp-cell">
+                  <div class="emp-avatar">{{ initials(a.employee) }}</div>
+                  <div>
+                    <p class="emp-name">{{ a.employee.nom }} {{ a.employee.prenom }}</p>
+                    <p class="emp-cat">{{ a.employee.categorie?.nom }}</p>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dates">
+              <th mat-header-cell *matHeaderCellDef>Période</th>
+              <td mat-cell *matCellDef="let a">
+                <span class="cell-secondary" *ngIf="a.dateDebut">
+                  {{ a.dateDebut }} → {{ a.dateFin || '…' }}
+                </span>
+                <span class="cell-secondary" *ngIf="!a.dateDebut">—</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="removeAction">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let a">
+                <button class="btn-remove" (click)="removeMember(a.id)">
+                  ✕ Retirer
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="teamColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: teamColumns;" class="data-row"></tr>
+
+          </table>
+        </div>
+
+        <!-- Empty team state -->
+        <div class="empty-state" *ngIf="!isLoadingTeam && teamAffectations.length === 0">
+          <mat-icon>group_add</mat-icon>
+          <p>Aucun membre dans ce projet.</p>
+          <button mat-stroked-button (click)="openAddMember()">Ajouter le premier membre</button>
+        </div>
+
+      </mat-card>
+    </div>
+
+    <!-- RIGHT: no project selected -->
+    <ng-template #noSelection>
+      <div class="no-selection">
+        <mat-icon>folder_open</mat-icon>
+        <p>Sélectionnez un projet pour voir son équipe</p>
+      </div>
+    </ng-template>
+
+  </div>
+
+</div>

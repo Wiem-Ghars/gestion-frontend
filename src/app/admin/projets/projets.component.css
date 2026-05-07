@@ -1,0 +1,603 @@
+/* ── Remove-member button (matches employees btn-delete style) ─ */
+.btn-remove {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 5px;
+  border: 0.5px solid rgba(163, 45, 45, 0.3);
+  color: #A32D2D;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.5;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.btn-remove:hover { background: rgba(163, 45, 45, 0.06); }
+
+/* ── Two-panel layout ──────────────────────────────────────── */
+.two-panel {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.proj-list-card {
+  flex: 0 0 290px;
+  min-width: 0;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.proj-detail {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Panel header row ──────────────────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a2e2f;
+}
+
+.panel-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 99px;
+  background: rgba(112, 193, 179, 0.15);
+  color: #3b6064;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── Project list ──────────────────────────────────────────── */
+.proj-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  gap: 2px;
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.proj-item {
+  width: 100%;
+  display: block;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+
+.proj-item:hover {
+  background: #f0f7f5;
+}
+
+.proj-item.active {
+  background: rgba(112, 193, 179, 0.15);
+}
+
+.proj-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.proj-item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a2e2f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proj-item-desc {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: #87bba2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proj-item-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.proj-item:hover .proj-item-actions,
+.proj-item.active .proj-item-actions {
+  opacity: 1;
+}
+
+.item-action-btn {
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+}
+
+.item-action-btn mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* ── Project form card ─────────────────────────────────────── */
+.proj-form-card {
+  margin-bottom: 20px;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.proj-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eef2f1;
+  background: #f8faf9;
+}
+
+.proj-form-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.proj-form-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(112, 193, 179, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.proj-form-icon mat-icon {
+  font-size: 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  color: #3b6064 !important;
+}
+
+.proj-form-title {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a2e2f;
+}
+
+.proj-form-sub {
+  margin: 0;
+  font-size: 11px;
+  color: #87bba2;
+}
+
+.proj-form-body {
+  padding: 18px 20px 4px;
+}
+
+.proj-field-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.proj-field-grow {
+  flex: 1;
+  min-width: 180px;
+}
+
+.proj-form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid #eef2f1;
+  background: #f8faf9;
+}
+
+/* ── Detail banner (project info) ──────────────────────────── */
+.detail-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px !important;
+}
+
+.banner-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
+}
+
+.banner-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 12px;
+  background: rgba(112, 193, 179, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.banner-icon mat-icon {
+  font-size: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  color: #3b6064 !important;
+}
+
+.banner-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.banner-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a2e2f;
+}
+
+.banner-desc {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #5c7e73;
+  line-height: 1.4;
+}
+
+.banner-dates {
+  margin: 0;
+  font-size: 13px;
+  color: #70c1b3;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.status-chip--lg {
+  font-size: 12px !important;
+  padding: 5px 12px !important;
+  flex-shrink: 0;
+}
+
+/* ── Team card ─────────────────────────────────────────────── */
+.team-card {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.team-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.add-member-btn mat-icon {
+  font-size: 17px !important;
+  width: 17px !important;
+  height: 17px !important;
+  margin-right: 4px;
+}
+
+/* ── Add member inline form ────────────────────────────────── */
+.add-member-form {
+  padding: 16px 20px;
+  border-bottom: 1px solid #eef2f1;
+  background: #f8faf9;
+}
+
+.add-member-fields {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.add-field-grow {
+  flex: 1;
+  min-width: 180px;
+}
+
+.add-member-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+/* ── Team table column flex widths ─────────────────────────── */
+:host ::ng-deep .mat-column-employee     { flex: 2 0 0 !important; }
+:host ::ng-deep .mat-column-dateDebut    { flex: 1 0 0 !important; }
+:host ::ng-deep .mat-column-dateFin      { flex: 1 0 0 !important; }
+:host ::ng-deep .mat-column-statut       { flex: 1 0 0 !important; }
+:host ::ng-deep .mat-column-removeAction { flex: 0 0 160px !important; justify-content: flex-end !important; }
+
+/* ── Team table wrapper ────────────────────────────────────── */
+.team-table-wrap {
+  overflow-x: auto;
+}
+
+/* ── Employee cell inside team table ───────────────────────── */
+.emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.emp-avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: rgba(112, 193, 179, 0.18);
+  color: #3b6064;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(112, 193, 179, 0.3);
+}
+
+.emp-name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a2e2f;
+}
+
+.emp-cat {
+  margin: 0;
+  font-size: 11px;
+  color: #87bba2;
+}
+
+/* ── No-selection placeholder ──────────────────────────────── */
+.no-selection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 80px 24px;
+  text-align: center;
+  color: #87bba2;
+}
+
+.no-selection mat-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  color: #c9e4ca !important;
+}
+
+.no-selection p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ── Sidebar filter toggle ─────────────────────────────────── */
+.sidebar-filter {
+  padding: 8px 10px 4px;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.filter-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  background: #f0f4f3;
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #87bba2;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  font-family: 'Inter', system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background: rgba(112, 193, 179, 0.1);
+  color: #3b6064;
+}
+
+.filter-btn--active {
+  background: #ffffff;
+  color: #1a2e2f;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(59, 96, 100, 0.1);
+}
+
+.filter-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.filter-dot--attente { background: #f59e0b; }
+.filter-dot--cours   { background: #70c1b3; }
+.filter-dot--termine { background: #ffa69e; }
+
+.filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.filter-count--attente { background: #fef3c7; color: #b45309; }
+.filter-count--cours   { background: rgba(112, 193, 179, 0.18); color: #3b6064; }
+.filter-count--termine { background: #FFCCCB; color: #64748b; }
+
+/* ── Sidebar paginator ─────────────────────────────────────── */
+.proj-paginator {
+  border-top: 1px solid #eef2f1;
+}
+
+:host ::ng-deep .proj-paginator .mat-mdc-paginator-container {
+  padding: 0 10px;
+  min-height: 48px;
+  font-size: 12px;
+}
+
+/* ── Date row in project form ──────────────────────────────── */
+.proj-date-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.proj-date-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* ── Team table dates column ───────────────────────────────── */
+:host ::ng-deep .mat-column-dates { flex: 1.2 0 0 !important; }
+
+/* ── Project item meta (dates + countdown) ─────────────────── */
+.proj-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.proj-item-dates {
+  font-size: 10px;
+  color: #87bba2;
+  white-space: nowrap;
+}
+
+/* ── Countdown badge ───────────────────────────────────────── */
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.countdown-badge--lg {
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+}
+
+.countdown-ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.countdown-warning {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.countdown-urgent {
+  background: rgba(239, 68, 68, 0.1);
+  color: #c0392b;
+}
+
+/* ── Banner right column ───────────────────────────────────── */
+.banner-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.banner-dates {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #87bba2;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .two-panel {
+    flex-direction: column;
+  }
+
+  .proj-list-card {
+    flex: none;
+    width: 100%;
+  }
+
+  .proj-date-row {
+    flex-direction: column;
+  }
+}
+

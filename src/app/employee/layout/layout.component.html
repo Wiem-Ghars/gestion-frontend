@@ -1,0 +1,77 @@
+<mat-sidenav-container class="sidenav-container">
+
+  <!-- ─── Sidebar ─── -->
+  <mat-sidenav mode="side" opened class="pc-sidebar">
+
+    <!-- Logo -->
+    <div class="sidenav-header">
+      <mat-icon>work_outline</mat-icon>
+      <span>Gestion Projets</span>
+    </div>
+
+    <!-- Nav section label -->
+    <div class="nav-section-title">Espace employé</div>
+
+    <!-- Navigation -->
+    <mat-nav-list>
+      <a mat-list-item
+         class="nav-link"
+         routerLink="dashboard"
+         routerLinkActive="active-link">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Tableau de bord</span>
+      </a>
+
+      <a mat-list-item
+         class="nav-link"
+         routerLink="projets"
+         routerLinkActive="active-link">
+        <mat-icon matListItemIcon>folder_outline</mat-icon>
+        <span matListItemTitle>Mes projets</span>
+      </a>
+    </mat-nav-list>
+
+    <!-- User + Logout -->
+    <div class="sidenav-footer">
+      <div class="user-info-box">
+        <div class="avatar bg-primary-50 text-primary-500">
+          {{ currentUser?.nom?.charAt(0) }}
+        </div>
+        <div>
+          <span class="user-name">{{ currentUser?.nom }}</span>
+          <span class="user-role">Employé</span>
+        </div>
+      </div>
+
+      <button mat-button class="logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Se déconnecter
+      </button>
+    </div>
+
+  </mat-sidenav>
+
+  <!-- ─── Main content ─── -->
+  <mat-sidenav-content class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-search">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Rechercher..." />
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-avatar">
+          {{ currentUser?.nom?.charAt(0) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Page content -->
+    <div class="page-area">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

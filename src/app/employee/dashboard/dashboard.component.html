@@ -1,0 +1,110 @@
+<div class="page">
+
+  <!-- Header -->
+  <div class="page-header single">
+    <div>
+      <h1>Bonjour, {{ currentUser?.nom }}</h1>
+      <p>Voici un aperçu de vos projets assignés</p>
+    </div>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div class="skeleton-grid" *ngIf="isLoading">
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+  </div>
+
+  <!-- Error state -->
+  <div class="alert alert-error" *ngIf="errorMsg && !isLoading">
+    <mat-icon>error_outline</mat-icon> {{ errorMsg }}
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMsg">
+
+    <!-- KPI mini-row -->
+    <div class="kpi-row">
+      <mat-card class="kpi-mini">
+        <mat-card-content>
+          <p class="kpi-val">{{ projets.length }}</p>
+          <p class="kpi-lbl">Total</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-mini kpi-mini--cours">
+        <mat-card-content>
+          <p class="kpi-val">{{ enCours }}</p>
+          <p class="kpi-lbl">En cours</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-mini kpi-mini--attente">
+        <mat-card-content>
+          <p class="kpi-val">{{ enAttente }}</p>
+          <p class="kpi-lbl">En attente</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-mini kpi-mini--termine">
+        <mat-card-content>
+          <p class="kpi-val">{{ termines }}</p>
+          <p class="kpi-lbl">Terminés</p>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="kpi-mini kpi-mini--urgent">
+        <mat-card-content>
+          <p class="kpi-val">{{ urgent }}</p>
+          <p class="kpi-lbl">Urgent</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Projects section -->
+    <div class="section-header">
+      <h2>Mes projets assignés</h2>
+      <a mat-stroked-button routerLink="../projets" class="see-all-btn">
+        Voir détails <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="projets.length === 0">
+      <mat-icon>folder_open</mat-icon>
+      <p>Aucun projet assigné pour le moment.</p>
+    </div>
+
+    <!-- Project cards grid -->
+    <div class="project-grid" *ngIf="projets.length > 0">
+      <mat-card
+        class="proj-card"
+        *ngFor="let p of projets"
+        (click)="openProjet(p)"
+        (keydown.enter)="openProjet(p)"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Ouvrir le projet ' + p.nom">
+        <mat-card-content>
+          <div class="proj-accent"></div>
+          <div class="proj-top">
+            <p class="proj-name">{{ p.nom }}</p>
+            <span class="status-chip" [ngClass]="statutClass(p.statut)">
+              {{ statutLabel(p.statut) }}
+            </span>
+          </div>
+          <p class="proj-desc">{{ p.description || 'Aucune description.' }}</p>
+          <div class="proj-meta" *ngIf="p.dateDebut">
+            <span class="proj-dates">📅 {{ p.dateDebut }} → {{ p.dateFin || '…' }}</span>
+          </div>
+          <div class="proj-footer">
+            <span class="countdown-badge"
+                  *ngIf="p.joursRestants != null && p.statut !== 'TERMINE'"
+                  [ngClass]="countdownClass(p.joursRestants)">
+              {{ p.joursRestants }} jours restants
+            </span>
+            <span class="proj-cta">Voir l'équipe →</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </ng-container>
+
+</div>
